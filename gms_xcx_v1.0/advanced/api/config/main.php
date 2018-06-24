@@ -17,14 +17,15 @@ return [
            // 'csrfParam' => '_csrf-backend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'common\models\Adminuser',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'enableSession' => false,
+//            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
-        'session' => [
-            // this is the name of the session cookie used for login on the backend
-            'name' => 'advanced-api',
-        ],
+//        'session' => [
+//            // this is the name of the session cookie used for login on the backend
+//        'name' => 'advanced-api',
+//    ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -51,6 +52,17 @@ return [
                     'controller'=>'top10',
                     'except'=>['delete','create','update','view'],
                     'pluralize'=>false,//是否使成复数形式
+                ],
+
+                ['class'=>'yii\rest\UrlRule',
+                    'controller'=>'adminuser',
+                    'except'=>['delete','create','update','view'],
+                    'pluralize'=>false,
+                    'extraPatterns' => [
+                        'POST login' => 'login',
+                        'POST signup' => 'signup',
+                    ]
+
                 ],
             ],
         ],

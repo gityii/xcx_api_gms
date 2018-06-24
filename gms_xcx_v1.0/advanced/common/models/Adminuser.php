@@ -3,7 +3,8 @@
 namespace common\models;
 
 use Yii;
-use yii\web\IdentityInterface;
+use yii\filters\RateLimitInterface;
+use yii\base\NotSupportedException;
 /**
  * This is the model class for table "adminuser".
  *
@@ -16,8 +17,10 @@ use yii\web\IdentityInterface;
  * @property string $auth_key
  * @property string $password_hash
  * @property string $password_reset_token
+ * @property int $allowance
+ * @property int $allowance_updated_at
  */
-class Adminuser extends \yii\db\ActiveRecord implements IdentityInterface
+class Adminuser extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface, RateLimitInterface
 {
     /**
      * {@inheritdoc}
@@ -35,10 +38,12 @@ class Adminuser extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['username', 'nickname', 'password', 'email', 'auth_key', 'password_hash'], 'required'],
+            [['expire_at', 'allowance', 'allowance_updated_at'], 'integer'],
             [['profile'], 'string'],
             [['username', 'nickname', 'password', 'email'], 'string', 'max' => 128],
             [['auth_key'], 'string', 'max' => 32],
-            [['password_hash', 'password_reset_token'], 'string', 'max' => 255],
+            [['password_hash', 'password_reset_token', 'access_token'], 'string', 'max' => 255],
+            [['access_token'], 'unique'],
         ];
     }
     /**
@@ -56,6 +61,10 @@ class Adminuser extends \yii\db\ActiveRecord implements IdentityInterface
             'auth_key' => 'Auth Key',
             'password_hash' => 'Password Hash',
             'password_reset_token' => 'Password Reset Token',
+            'access_token' => '访问token',
+            'expire_at' => '过期时间',
+            'allowance' => 'Allowance',
+            'allowance_updated_at' => 'Allowance Updated At'
         ];
     }
 
@@ -72,7 +81,11 @@ class Adminuser extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        //throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        return static::find()
+            ->where(['access_token'=>$token])
+            ->andWhere(['>','expire_at',time()])
+            ->one();
     }
 
     /**
@@ -188,5 +201,28 @@ class Adminuser extends \yii\db\ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function generateAccessToken()
+    {
+        $this->access_token = Yii::$app->security->generateRandomString();
+        return $this->access_token;
+    }
+
+    public function getRateLimit($request, $action)
+    {
+        return [3,1];  //每秒只能请求3次
+    }
+
+    public function loadAllowance($request, $action)
+    {
+        return [$this->allowance,$this->allowance_updated_at];
+    }
+
+    public function saveAllowance($request, $action, $allowance, $timestamp)
+    {
+        $this->allowance = $allowance;
+        $this->allowance_updated_at = $timestamp;
+        $this->save();
     }
 }

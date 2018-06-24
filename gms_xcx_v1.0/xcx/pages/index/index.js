@@ -147,6 +147,125 @@ Page({
     })
   },
 
+  //登录
+  bindLoginTap: function () {
+    var page = this;
+    wx.request({
+      url: 'http://xcx.com/adminuser/login',
+      header: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      method: 'POST',
+      data: {
+        username: "weixi",
+        password: "123456"
+      },
+      success: function (res) {
+        //page.setData({ motto: res.data.content })
+        console.log(res.data)
+      }
+    })
+  },
+
+  //有访问令牌时，读取数据
+  bindAuthReadTap: function () {
+    var page = this;
+    wx.request({
+      url: 'http://xcx.com/articles/32?access-token=ZqqS6bZEsZpl_QnmvYW-e25OTDUdA4Bw',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      method: 'GET',
+      data: {
+        page: 1  //此处翻页
+      },
+      success: function (res) {
+       // page.setData({ motto: res.data.title })
+        console.log(res.data)
+      }
+    })
+  },
+
+  //BasicAuth读取数据,HTTP基本认证
+  bindBasicAuthReadTap: function () {
+    var page = this;
+    wx.request({
+      url: 'http://xcx.com/articles',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      method: 'GET',
+      data: {
+        page: 1,
+      },
+      success: function (res) {
+        page.setData({ motto: res.data.content })
+        console.log(res.data)
+      }
+    })
+  },
+  
+  //注册用户
+  bindSingupReadTap: function () {
+    var page = this;
+    wx.request({
+      url: 'http://xcx.com/adminuser/signup',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      data: {
+        username: 'huangrong',
+        nickname: '黄蓉',
+        password: '123321',
+        password_repeat: '123321',
+        email: 'huangrong@qq.com'
+      },
+      success: function (res) {
+        //page.setData({ motto: res.data.content })
+        console.log(res.data)
+      }
+    })
+  },
+
+  //速率限制的演示
+  bindRateReadTap: function () {
+    var page = this;
+    wx.request({
+      url: 'http://xcx.com/articles/32?access-token=ZqqS6bZEsZpl_QnmvYW-e25OTDUdA4Bw',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      method: 'GET',
+      data: {
+        page: 1,
+      },
+      success: function (res) {
+        //page.setData({ motto: res.data.content })
+        console.log(res.data)
+      }
+    })
+  },
+
+  //格式化响应
+  bindNegoReadTap: function () {
+    var page = this;
+    wx.request({
+      url: 'http://xcx.com/articles',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      method: 'GET',
+      data: {
+        page: 1,
+      },
+      success: function (res) {
+        //page.setData({ motto: res.data.content })
+        console.log(res.data)
+      }
+    })
+  },
+
 
   //事件处理函数
   bindViewTap: function() {

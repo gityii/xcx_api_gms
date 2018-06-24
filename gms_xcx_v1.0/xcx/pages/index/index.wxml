@@ -7,14 +7,22 @@
       <text class="userinfo-nickname">{{userInfo.nickName}}</text>
     </block>
   </view>
-  <view class="usermotto">
+  <!-- <view class="usermotto">
     <text class="user-motto">{{motto}}</text>
-  </view>
+  </view> -->
     <view bindtap='bindReadTap'>读取数据</view>
     <view bindtap='bindCreateTap'>新增数据</view>
     <view bindtap='bindUpdateTap'>修改数据</view>
     <view bindtap='bindDeleteTap'>删除数据</view>    
     <view bindtap='bindOtherTap'>其他http动词</view> 
     <view bindtap='bindSearchTap'>文章搜索</view>       
-    <view bindtap='bindTop10Tap'>Top 10</view>        
+    <view bindtap='bindTop10Tap'>Top 10</view>   
+  <view>=================</view>
+
+  <view bindtap='bindLoginTap'>登录</view>
+  <view bindtap='bindAuthReadTap'>有存取令牌时的操作</view>
+  <view bindtap='bindBasicAuthReadTap'>Basic Auth</view>      
+  <view bindtap='bindSingupReadTap'>注册用户</view>   
+  <view bindtap='bindRateReadTap'>速率限制</view>
+   <view bindtap='bindNegoReadTap'>格式化响应</view> 
 </view>
